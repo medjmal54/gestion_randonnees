@@ -1,0 +1,32 @@
+﻿@model AdminBusesIndexViewModel
+@{
+    ViewData["Title"] = "Admin - Bus";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Bus</h1>
+    <a class="btn btn-primary" asp-action="CreateBus">Nouveau bus</a>
+</div>
+@if (!Model.Buses.Any()) { <p>Aucun bus.</p> }
+else {
+<table class="table table-striped align-middle">
+    <thead><tr><th>Immatriculation</th><th>Places</th><th>Chauffeur</th><th>Téléphone</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var b in Model.Buses)
+    {
+        <tr>
+            <td>@b.Immatriculation</td>
+            <td>@b.SeatCount</td>
+            <td>@b.DriverName</td>
+            <td>@b.DriverPhone</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" asp-action="EditBus" asp-route-id="@b.Id">Modifier</a>
+                <form asp-action="DeleteBus" asp-route-id="@b.Id" method="post" class="d-inline" onsubmit="return confirm('Supprimer ce bus ?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+}

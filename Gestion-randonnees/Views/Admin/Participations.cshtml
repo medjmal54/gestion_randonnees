@@ -1,0 +1,53 @@
+﻿@model AdminParticipationsViewModel
+@{
+    ViewData["Title"] = "Admin - Participations";
+}
+<h1>Participations</h1>
+<h3 class="mt-3">En attente (@Model.Pending.Count)</h3>
+@if (!Model.Pending.Any()) { <p class="text-muted">Aucune demande en attente.</p> }
+else {
+<table class="table table-sm align-middle">
+    <thead><tr><th>Utilisateur</th><th>Randonnée</th><th>Date demande</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var p in Model.Pending)
+    {
+        <tr>
+            <td>@p.User?.Nom<br/><small>@p.User?.Email</small></td>
+            <td>@p.Hike?.Titre<br/><small>@p.Hike?.DateDebut.ToString("dd/MM/yyyy")</small></td>
+            <td>@p.DateCreation.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+            <td class="text-end">
+                <form asp-action="UpdateParticipationStatus" asp-route-id="@p.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="status" value="@((int)ParticipationStatus.Acceptee)" />
+                    <button class="btn btn-sm btn-success" type="submit">Accepter</button>
+                </form>
+                <form asp-action="UpdateParticipationStatus" asp-route-id="@p.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="status" value="@((int)ParticipationStatus.Refusee)" />
+                    <button class="btn btn-sm btn-outline-danger" type="submit">Refuser</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+}
+
+<h3 class="mt-4">Traitées (@Model.Treated.Count)</h3>
+@if (!Model.Treated.Any()) { <p class="text-muted">Aucune participation traitée.</p> }
+else {
+<table class="table table-sm align-middle">
+    <thead><tr><th>Utilisateur</th><th>Randonnée</th><th>Statut</th><th>Date</th></tr></thead>
+    <tbody>
+    @foreach (var p in Model.Treated)
+    {
+        <tr>
+            <td>@p.User?.Nom</td>
+            <td>@p.Hike?.Titre</td>
+            <td>@p.Statut</td>
+            <td>@p.DateCreation.ToLocalTime().ToString("dd/MM/yyyy")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+}
