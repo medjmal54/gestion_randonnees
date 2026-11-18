@@ -1,0 +1,34 @@
+﻿@model UserDashboardViewModel
+@{
+    ViewData["Title"] = "Mon tableau de bord";
+}
+<h1>Mon tableau de bord</h1>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Total</div><div class="fs-4">@Model.Total</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Acceptées</div><div class="fs-4">@Model.Accepted</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">En attente</div><div class="fs-4">@Model.Pending</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Dépensé</div><div class="fs-4">@Model.TotalSpent.ToString("0.##") DT</div></div></div></div>
+</div>
+
+@if (!Model.Participations.Any())
+{
+    <p>Vous n'avez pas encore de participations.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead><tr><th>Randonnée</th><th>Date</th><th>Région</th><th>Prix</th><th>Statut</th></tr></thead>
+        <tbody>
+        @foreach (var p in Model.Participations)
+        {
+            <tr>
+                <td><a asp-controller="Hikes" asp-action="Details" asp-route-id="@p.HikeId">@p.Hike?.Titre</a></td>
+                <td>@p.Hike?.DateDebut.ToString("dd/MM/yyyy")</td>
+                <td>@p.Hike?.Region</td>
+                <td>@p.Hike?.Prix.ToString("0.##") DT</td>
+                <td>@p.Statut</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

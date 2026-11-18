@@ -1,0 +1,42 @@
+﻿@model HikeFormViewModel
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Modifier randonnée" : "Nouvelle randonnée";
+    var buses = ViewBag.Buses as IEnumerable<Bus> ?? Enumerable.Empty<Bus>();
+}
+<h1>@ViewData["Title"]</h1>
+<form method="post" enctype="multipart/form-data" asp-action="@(isEdit ? "EditHike" : "CreateHike")" asp-route-id="@Model.Id">
+    @Html.AntiForgeryToken()
+    @if (isEdit) { <input type="hidden" asp-for="Id" /> }
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row g-3">
+        <div class="col-md-6"><label asp-for="Titre" class="form-label"></label><input asp-for="Titre" class="form-control" /><span asp-validation-for="Titre" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="Categorie" class="form-label"></label><input asp-for="Categorie" class="form-control" /><span asp-validation-for="Categorie" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="Region" class="form-label"></label><input asp-for="Region" class="form-control" /><span asp-validation-for="Region" class="text-danger"></span></div>
+        <div class="col-12"><label asp-for="Description" class="form-label"></label><textarea asp-for="Description" class="form-control" rows="4"></textarea><span asp-validation-for="Description" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="DateDebut" class="form-label"></label><input asp-for="DateDebut" type="datetime-local" class="form-control" /><span asp-validation-for="DateDebut" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="DateFin" class="form-label"></label><input asp-for="DateFin" type="datetime-local" class="form-control" /><span asp-validation-for="DateFin" class="text-danger"></span></div>
+        <div class="col-md-2"><label asp-for="DistanceKm" class="form-label">Distance (km)</label><input asp-for="DistanceKm" class="form-control" /><span asp-validation-for="DistanceKm" class="text-danger"></span></div>
+        <div class="col-md-2"><label asp-for="Capacite" class="form-label"></label><input asp-for="Capacite" class="form-control" /><span asp-validation-for="Capacite" class="text-danger"></span></div>
+        <div class="col-md-2"><label asp-for="Prix" class="form-label"></label><input asp-for="Prix" class="form-control" /><span asp-validation-for="Prix" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="Difficulte" class="form-label"></label><select asp-for="Difficulte" asp-items="Html.GetEnumSelectList<Difficulty>()" class="form-select"></select></div>
+        <div class="col-md-3"><label asp-for="Statut" class="form-label"></label><select asp-for="Statut" asp-items="Html.GetEnumSelectList<HikeStatus>()" class="form-select"></select></div>
+        <div class="col-md-3"><label asp-for="BusId" class="form-label">Bus</label>
+            <select asp-for="BusId" class="form-select">
+                <option value="">-- Aucun --</option>
+                @foreach (var b in buses)
+                {
+                    <option value="@b.Id">@b.Immatriculation (@b.SeatCount pl.)</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3"><label asp-for="ImageFile" class="form-label">Image</label><input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+            @if (!string.IsNullOrWhiteSpace(Model.ExistingImagePath)) { <small><a href="@Model.ExistingImagePath" target="_blank">Image actuelle</a></small> }
+        </div>
+    </div>
+    <div class="mt-3">
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <a class="btn btn-secondary" asp-action="Hikes">Annuler</a>
+    </div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

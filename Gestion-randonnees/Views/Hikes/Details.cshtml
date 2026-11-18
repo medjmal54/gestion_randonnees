@@ -1,0 +1,77 @@
+﻿@model HikeDetailsViewModel
+@{
+    ViewData["Title"] = Model.Hike.Titre;
+}
+<div class="row">
+    <div class="col-md-8">
+        <h1>@Model.Hike.Titre</h1>
+        <p class="text-muted">@Model.Hike.Region · @Model.Hike.Categorie · @Model.Hike.Difficulte</p>
+        @if (!string.IsNullOrWhiteSpace(Model.Hike.ImagePath))
+        {
+            <img src="@Model.Hike.ImagePath" alt="@Model.Hike.Titre" class="img-fluid rounded mb-3" />
+        }
+        <p>@Model.Hike.Description</p>
+        <ul>
+            <li><strong>Dates:</strong> @Model.Hike.DateDebut.ToString("dd/MM/yyyy HH:mm") - @Model.Hike.DateFin.ToString("dd/MM/yyyy HH:mm")</li>
+            <li><strong>Distance:</strong> @Model.Hike.DistanceKm km</li>
+            <li><strong>Capacité:</strong> @Model.AcceptedCount / @Model.Hike.Capacite</li>
+            <li><strong>Prix:</strong> @Model.Hike.Prix.ToString("0.##") DT</li>
+            <li><strong>Statut:</strong> @Model.Hike.Statut</li>
+            @if (Model.Hike.Bus != null)
+            {
+                <li><strong>Bus:</strong> @Model.Hike.Bus.Immatriculation</li>
+            }
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Participation</h5>
+                @if (!Model.IsAuthenticated)
+                {
+                    <p>Connectez-vous pour participer ou ajouter aux favoris.</p>
+                    <a class="btn btn-primary" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">Se connecter</a>
+                }
+                else
+                {
+                    @if (Model.AlreadyRequested)
+                    {
+                        <p>Votre demande: <strong>@Model.ExistingParticipationStatus</strong></p>
+                    }
+                    else if (Model.IsFull)
+                    {
+                        <p class="text-danger">Complet.</p>
+                    }
+                    else
+                    {
+                        <form asp-action="Participate" asp-route-id="@Model.Hike.Id" method="post" class="mb-2">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success w-100">Demander à participer</button>
+                        </form>
+                    }
+                    <button id="favBtn" class="btn @(Model.IsFavorite ? "btn-danger" : "btn-outline-danger") w-100" type="button" data-id="@Model.Hike.Id">
+                        @(Model.IsFavorite ? "Retirer des favoris" : "Ajouter aux favoris")
+                    </button>
+                    <form id="favTokenForm" class="d-none">@Html.AntiForgeryToken()</form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+@if (Model.IsAuthenticated)
+{
+<script>
+document.getElementById('favBtn')?.addEventListener('click', async function () {
+    const token = document.querySelector('#favTokenForm input[name="__RequestVerificationToken"]').value;
+    const res = await fetch('@Url.Action("Toggle", "Favorites")', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'RequestVerificationToken': token },
+        body: 'hikeId=@Model.Hike.Id'
+    });
+    if (res.ok) location.reload();
+});
+</script>
+}
+}

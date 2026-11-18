@@ -1,0 +1,41 @@
+﻿@model IReadOnlyList<Hike>
+@{
+    ViewData["Title"] = "Accueil";
+}
+
+<div class="p-4 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold">L'Échappée Sauvage</h1>
+        <p class="col-md-8 fs-5">Découvrez les plus belles randonnées en Tunisie.</p>
+        <a class="btn btn-primary btn-lg" asp-controller="Hikes" asp-action="Index">Voir les randonnées</a>
+    </div>
+</div>
+
+<h2 class="mb-3">Prochaines randonnées</h2>
+@if (Model == null || !Model.Any())
+{
+    <p>Aucune randonnée à venir pour le moment.</p>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var hike in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrWhiteSpace(hike.ImagePath))
+                    {
+                        <img src="@hike.ImagePath" class="card-img-top" alt="@hike.Titre" style="height:180px;object-fit:cover;" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@hike.Titre</h5>
+                        <p class="card-text text-muted mb-1">@hike.Region · @hike.Difficulte</p>
+                        <p class="card-text mb-1"><strong>@hike.Prix.ToString("0.##") DT</strong></p>
+                        <p class="card-text"><small>@hike.DateDebut.ToString("dd/MM/yyyy HH:mm")</small></p>
+                        <a class="btn btn-outline-primary btn-sm" asp-controller="Hikes" asp-action="Details" asp-route-id="@hike.Id">Détails</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

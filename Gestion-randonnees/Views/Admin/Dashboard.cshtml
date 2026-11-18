@@ -1,0 +1,19 @@
+﻿@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin - Tableau de bord";
+}
+<h1>Tableau de bord admin</h1>
+<form method="get" class="row g-2 mb-4">
+    <div class="col-auto"><label class="form-label">Du</label><input type="date" name="dateFrom" value="@Model.DateFrom.ToString("yyyy-MM-dd")" class="form-control" /></div>
+    <div class="col-auto"><label class="form-label">Au</label><input type="date" name="dateTo" value="@Model.DateTo.ToString("yyyy-MM-dd")" class="form-control" /></div>
+    <div class="col-auto align-self-end"><button class="btn btn-primary" type="submit">Filtrer</button></div>
+</form>
+<div class="row g-3">
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Randonnées (total)</div><div class="fs-4">@Model.TotalHikes</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Utilisateurs</div><div class="fs-4">@Model.TotalUsers</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Demandes (période)</div><div class="fs-4">@Model.TotalRequests</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Revenu accepté</div><div class="fs-4">@Model.Revenue.ToString("0.##") DT</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Acceptées</div><div class="fs-4">@Model.AcceptedRequests</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">Refusées</div><div class="fs-4">@Model.RefusedRequests</div></div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body"><div class="text-muted">En attente</div><div class="fs-4">@Model.PendingRequests</div></div></div></div>
+</div>

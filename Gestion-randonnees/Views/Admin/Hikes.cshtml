@@ -1,0 +1,38 @@
+﻿@model AdminHikesIndexViewModel
+@{
+    ViewData["Title"] = "Admin - Randonnées";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Randonnées</h1>
+    <a class="btn btn-primary" asp-action="CreateHike">Nouvelle randonnée</a>
+</div>
+@if (!Model.Hikes.Any())
+{
+    <p>Aucune randonnée.</p>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead><tr><th>Titre</th><th>Région</th><th>Dates</th><th>Capacité</th><th>Prix</th><th>Bus</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var h in Model.Hikes)
+        {
+            <tr>
+                <td>@h.Titre<br/><small class="text-muted">@h.Categorie · @h.Difficulte · @h.Statut</small></td>
+                <td>@h.Region</td>
+                <td>@h.DateDebut.ToString("dd/MM/yyyy")<br/><small>@h.DateFin.ToString("dd/MM/yyyy")</small></td>
+                <td>@h.Capacite</td>
+                <td>@h.Prix.ToString("0.##") DT</td>
+                <td>@h.Bus?.Immatriculation</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" asp-action="EditHike" asp-route-id="@h.Id">Modifier</a>
+                    <form asp-action="DeleteHike" asp-route-id="@h.Id" method="post" class="d-inline" onsubmit="return confirm('Supprimer cette randonnée ?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

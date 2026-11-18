@@ -1,0 +1,22 @@
+﻿@model BusFormViewModel
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Modifier bus" : "Nouveau bus";
+}
+<h1>@ViewData["Title"]</h1>
+<form method="post" asp-action="@(isEdit ? "EditBus" : "CreateBus")" asp-route-id="@Model.Id">
+    @Html.AntiForgeryToken()
+    @if (isEdit) { <input type="hidden" asp-for="Id" /> }
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row g-3">
+        <div class="col-md-4"><label asp-for="Immatriculation" class="form-label"></label><input asp-for="Immatriculation" class="form-control" /><span asp-validation-for="Immatriculation" class="text-danger"></span></div>
+        <div class="col-md-2"><label asp-for="SeatCount" class="form-label">Places</label><input asp-for="SeatCount" class="form-control" /><span asp-validation-for="SeatCount" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="DriverName" class="form-label">Chauffeur</label><input asp-for="DriverName" class="form-control" /><span asp-validation-for="DriverName" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="DriverPhone" class="form-label">Tél. chauffeur</label><input asp-for="DriverPhone" class="form-control" /><span asp-validation-for="DriverPhone" class="text-danger"></span></div>
+    </div>
+    <div class="mt-3">
+        <button class="btn btn-primary" type="submit">Enregistrer</button>
+        <a class="btn btn-secondary" asp-action="Buses">Annuler</a>
+    </div>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,56 @@
+﻿@model HikeIndexViewModel
+@{
+    ViewData["Title"] = "Randonnées";
+}
+<h1>Randonnées</h1>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-3">
+        <input asp-for="Filter.Region" class="form-control" placeholder="Région" />
+    </div>
+    <div class="col-md-2">
+        <input asp-for="Filter.Categorie" class="form-control" placeholder="Catégorie" />
+    </div>
+    <div class="col-md-2">
+        <select asp-for="Filter.Difficulte" class="form-select" asp-items="Html.GetEnumSelectList<Difficulty>()">
+            <option value="">Difficulté</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input asp-for="Filter.PrixMin" class="form-control" placeholder="Prix min" />
+    </div>
+    <div class="col-md-2">
+        <input asp-for="Filter.PrixMax" class="form-control" placeholder="Prix max" />
+    </div>
+    <div class="col-md-1">
+        <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+    </div>
+</form>
+
+@if (!Model.Hikes.Any())
+{
+    <p>Aucune randonnée trouvée.</p>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var hike in Model.Hikes)
+        {
+            <div class="col-md-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrWhiteSpace(hike.ImagePath))
+                    {
+                        <img src="@hike.ImagePath" class="card-img-top" alt="@hike.Titre" style="height:180px;object-fit:cover;" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@hike.Titre</h5>
+                        <p class="mb-1 text-muted">@hike.Region · @hike.Categorie · @hike.Difficulte</p>
+                        <p class="mb-1">@hike.Prix.ToString("0.##") DT · @hike.Capacite places</p>
+                        <p class="mb-2"><small>@hike.DateDebut.ToString("dd/MM/yyyy HH:mm")</small></p>
+                        <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@hike.Id">Détails</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

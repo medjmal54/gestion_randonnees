@@ -1,0 +1,42 @@
+﻿@model ProfilePageViewModel
+@{
+    ViewData["Title"] = "Mon profil";
+}
+<h1>Mon profil</h1>
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card"><div class="card-body">
+            <h5>Informations</h5>
+            @if (!string.IsNullOrWhiteSpace(Model.Profile.ProfileImagePath))
+            {
+                <img src="@Model.Profile.ProfileImagePath" alt="Photo" class="img-thumbnail mb-2" style="max-width:120px;" />
+            }
+            <form asp-action="UpdateProfile" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3"><label asp-for="Profile.Nom" class="form-label"></label><input asp-for="Profile.Nom" class="form-control" /><span asp-validation-for="Profile.Nom" class="text-danger"></span></div>
+                <div class="mb-3"><label asp-for="Profile.Email" class="form-label"></label><input asp-for="Profile.Email" class="form-control" /><span asp-validation-for="Profile.Email" class="text-danger"></span></div>
+                <div class="mb-3"><label asp-for="Profile.Telephone" class="form-label"></label><input asp-for="Profile.Telephone" class="form-control" /></div>
+                <button class="btn btn-primary" type="submit">Enregistrer</button>
+            </form>
+            <hr />
+            <form asp-action="UpdatePhoto" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="mb-2"><input type="file" name="photo" class="form-control" accept="image/*" /></div>
+                <button class="btn btn-outline-secondary" type="submit">Mettre à jour la photo</button>
+            </form>
+        </div></div>
+    </div>
+    <div class="col-md-6">
+        <div class="card"><div class="card-body">
+            <h5>Mot de passe</h5>
+            <form asp-action="ChangePassword" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3"><label class="form-label">Mot de passe actuel</label><input name="ChangePassword.CurrentPassword" type="password" class="form-control" /></div>
+                <div class="mb-3"><label class="form-label">Nouveau mot de passe</label><input name="ChangePassword.NewPassword" type="password" class="form-control" /></div>
+                <div class="mb-3"><label class="form-label">Confirmation</label><input name="ChangePassword.ConfirmNewPassword" type="password" class="form-control" /></div>
+                <button class="btn btn-warning" type="submit">Changer le mot de passe</button>
+            </form>
+        </div></div>
+    </div>
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
